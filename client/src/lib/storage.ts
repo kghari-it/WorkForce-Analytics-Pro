@@ -83,6 +83,28 @@ class StorageManager {
     return allRecords.filter(r => r.date >= startDate && r.date <= endDate);
   }
 
+  async deleteRecordsByDateRange(startDate: string, endDate: string): Promise<void> {
+    const allRecords = await this.getRecords();
+    const recordsToKeep = allRecords.filter(r => r.date < startDate || r.date > endDate);
+    
+    if (this.useLocalStorage) {
+      localStorage.setItem('farm-records', JSON.stringify(recordsToKeep));
+    } else {
+      const tx = this.db!.transaction('records', 'readwrite');
+      await tx.store.clear();
+      await Promise.all(recordsToKeep.map(r => tx.store.put(r)));
+      await tx.done;
+    }
+  }
+
+  async deleteAllRecords(): Promise<void> {
+    if (this.useLocalStorage) {
+      localStorage.removeItem('farm-records');
+    } else {
+      await this.db!.clear('records');
+    }
+  }
+
   async saveWorkerSettings(settings: WorkerSettings[]): Promise<void> {
     if (this.useLocalStorage) {
       localStorage.setItem('farm-settings', JSON.stringify(settings));
