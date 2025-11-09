@@ -1,0 +1,31 @@
+You are an expert React developer. Build a complete, production-ready single-page React MVP that implements a daily salary & productivity tracker for 3 rubber-farm workers, matching these exact requirements:
+
+- APP BEHAVIOR
+  - 3 fixed workers: Worker A, Worker B, Worker C (allow rename).
+  - Daily record: date (default today), for each worker: Worked? (checkbox) and Sheets tapped (integer ≥0).
+  - Salary rule: if Worked = true → salary = 1100 INR; else → salary = 0.
+  - Save should create or update a record for date+worker (no duplicates).
+  - Non-blocking warning if Sheets > 0 while Worked = false.
+  - Local persistence: use IndexedDB (idb) or localStorage (prefer IndexedDB for reliability). Provide a fallback to localStorage if IndexedDB unavailable.
+  - Export/import CSV functionality for the full dataset.
+  - Dashboard with date-range filter and per-worker totals: days worked, total salary (days_worked × 1100), total sheets. Show grand totals.
+  - Mobile-friendly, accessible UI.
+
+- TECH & STRUCTURE
+  - Provide a single-file React app you can run with `npx create-react-app` or Vite (preferably Vite). If single file, provide index.html + index.jsx + styles in the same bundle.
+  - Use functional components and hooks only. No external state mgmt.
+  - Keep dependencies minimal; you may use a tiny date library (dayjs) if needed but prefer native Date.
+  - Include clear comments and modular functions: data model, persistence, CSV export, validations, UI.
+
+- UI DETAILS
+  - Daily Entry view: one row per worker with Worked toggle, Sheets input, and computed daily salary shown.
+  - Save button at bottom. Top summary: "Total salary for the day: ₹____".
+  - Dashboard: table view, date range picker, per-worker totals, export CSV button.
+  - Rename worker control in settings panel.
+  - Provide sample seed data for the last 7 days on initial load.
+
+- DELIVERABLES
+  - Full source code you can paste into a React project (or run as a single-file Vite app).
+  - README with exact run steps (`npm install`, `npm run dev` or `npm start`) and basic usage.
+  - Inline sample data and tests/examples demonstrating expected outputs.
+  - Do not ask clarifying questions — generate the complete app now.
