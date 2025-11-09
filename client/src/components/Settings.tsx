@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { storage, WorkerSettings } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
-import { Save, RotateCcw, Plus, Trash2, AlertTriangle } from 'lucide-react';
+import { Save, RotateCcw, Plus, Trash2, AlertTriangle, Users, Database } from 'lucide-react';
 
 export default function Settings() {
   const [workers, setWorkers] = useState<WorkerSettings[]>([]);
@@ -118,10 +118,15 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Workers</h2>
-          <Button onClick={addWorker} size="sm" variant="outline" data-testid="button-add-worker">
+      <Card className="p-6 border-border/50">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="text-lg font-semibold">Workers</h2>
+          </div>
+          <Button onClick={addWorker} size="sm" variant="outline" className="shadow-sm" data-testid="button-add-worker">
             <Plus className="w-4 h-4 mr-2" />
             Add Worker
           </Button>
@@ -156,20 +161,22 @@ export default function Settings() {
         </div>
       </Card>
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Button onClick={handleSave} data-testid="button-save-settings">
-          <Save className="w-4 h-4 mr-2" />
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button onClick={handleSave} size="lg" className="shadow-md" data-testid="button-save-settings">
+          <Save className="w-5 h-5 mr-2" />
           Save Settings
         </Button>
-        <Button onClick={handleReset} variant="outline" data-testid="button-reset-settings">
+        <Button onClick={handleReset} variant="outline" size="lg" className="shadow-sm" data-testid="button-reset-settings">
           <RotateCcw className="w-4 h-4 mr-2" />
           Reset to Defaults
         </Button>
       </div>
 
-      <Card className="p-6 border-destructive/50">
-        <div className="flex items-start gap-3 mb-4">
-          <AlertTriangle className="w-5 h-5 text-destructive mt-0.5" />
+      <Card className="p-6 border-destructive/50 bg-destructive/5">
+        <div className="flex items-start gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+            <Database className="w-5 h-5 text-destructive" />
+          </div>
           <div>
             <h2 className="text-lg font-semibold text-destructive">Danger Zone</h2>
             <p className="text-sm text-muted-foreground mt-1">

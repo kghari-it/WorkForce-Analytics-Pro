@@ -13,7 +13,7 @@ import {
 import { storage, WorkerRecord, WorkerSettings } from '@/lib/storage';
 import { exportToCSV, parseCSV } from '@/lib/csv-utils';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Upload } from 'lucide-react';
+import { Download, Upload, TrendingUp, IndianRupee, Calendar, FileText, Users } from 'lucide-react';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<WorkerRecord[]>([]);
@@ -130,7 +130,10 @@ export default function Dashboard() {
           />
         </div>
         <div className="flex-1 space-y-2">
-          <Label htmlFor="worker-filter">Worker Filter</Label>
+          <Label htmlFor="worker-filter" className="flex items-center gap-2 text-sm font-medium">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            Worker Filter
+          </Label>
           <Select value={selectedWorker} onValueChange={setSelectedWorker}>
             <SelectTrigger id="worker-filter" data-testid="select-worker-filter">
               <SelectValue placeholder="All Workers" />
@@ -148,63 +151,89 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Total Days Worked</p>
-            <p className="text-2xl font-bold font-mono" data-testid="text-grand-days">
-              {grandTotals.daysWorked}
-            </p>
+        <Card className="p-5 border-border/50 hover-elevate transition-all">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Total Days Worked
+              </p>
+              <p className="text-3xl font-bold font-mono" data-testid="text-grand-days">
+                {grandTotals.daysWorked}
+              </p>
+            </div>
+            <div className="w-12 h-12 rounded-lg bg-chart-2/10 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-chart-2" />
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Total Salary</p>
-            <p className="text-2xl font-bold font-mono text-primary" data-testid="text-grand-salary">
-              ₹{grandTotals.totalSalary.toLocaleString('en-IN')}
-            </p>
+        <Card className="p-5 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover-elevate transition-all">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <IndianRupee className="w-4 h-4" />
+                Total Salary
+              </p>
+              <p className="text-3xl font-bold font-mono text-primary" data-testid="text-grand-salary">
+                ₹{grandTotals.totalSalary.toLocaleString('en-IN')}
+              </p>
+            </div>
+            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+              <IndianRupee className="w-6 h-6 text-primary" />
+            </div>
           </div>
         </Card>
-        <Card className="p-4">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Total Sheets</p>
-            <p className="text-2xl font-bold font-mono" data-testid="text-grand-sheets">
-              {grandTotals.totalSheets}
-            </p>
+        <Card className="p-5 border-border/50 hover-elevate transition-all">
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Total Sheets
+              </p>
+              <p className="text-3xl font-bold font-mono" data-testid="text-grand-sheets">
+                {grandTotals.totalSheets}
+              </p>
+            </div>
+            <div className="w-12 h-12 rounded-lg bg-chart-3/10 flex items-center justify-center">
+              <FileText className="w-6 h-6 text-chart-3" />
+            </div>
           </div>
         </Card>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left p-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">Worker</th>
-              <th className="text-right p-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">Days Worked</th>
-              <th className="text-right p-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">Total Salary</th>
-              <th className="text-right p-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">Total Sheets</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(workerTotals).map(([workerId, totals]) => (
-              <tr key={workerId} className="border-b hover-elevate" data-testid={`row-worker-${workerId}`}>
-                <td className="p-3 font-medium">{totals.name}</td>
-                <td className="p-3 text-right font-mono">{totals.daysWorked}</td>
-                <td className="p-3 text-right font-mono">₹{totals.totalSalary.toLocaleString('en-IN')}</td>
-                <td className="p-3 text-right font-mono">{totals.totalSheets}</td>
+      <Card className="overflow-hidden border-border/50">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead className="bg-muted/50">
+              <tr className="border-b">
+                <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Worker</th>
+                <th className="text-right p-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Days Worked</th>
+                <th className="text-right p-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Salary</th>
+                <th className="text-right p-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Sheets</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {Object.entries(workerTotals).map(([workerId, totals]) => (
+                <tr key={workerId} className="border-b hover-elevate transition-all" data-testid={`row-worker-${workerId}`}>
+                  <td className="p-4 font-semibold">{totals.name}</td>
+                  <td className="p-4 text-right font-mono text-base">{totals.daysWorked}</td>
+                  <td className="p-4 text-right font-mono text-base font-semibold text-primary">₹{totals.totalSalary.toLocaleString('en-IN')}</td>
+                  <td className="p-4 text-right font-mono text-base">{totals.totalSheets}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Button onClick={handleExport} variant="outline" data-testid="button-export">
-          <Download className="w-4 h-4 mr-2" />
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button onClick={handleExport} variant="outline" size="lg" className="shadow-sm" data-testid="button-export">
+          <Download className="w-5 h-5 mr-2" />
           Export CSV
         </Button>
-        <Button variant="outline" asChild data-testid="button-import">
+        <Button variant="outline" size="lg" className="shadow-sm" asChild data-testid="button-import">
           <label className="cursor-pointer">
-            <Upload className="w-4 h-4 mr-2" />
+            <Upload className="w-5 h-5 mr-2" />
             Import CSV
             <input
               type="file"

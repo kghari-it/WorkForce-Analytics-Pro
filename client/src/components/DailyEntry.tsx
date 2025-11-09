@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import WorkerEntryCard from './WorkerEntryCard';
 import { storage, WorkerSettings, WorkerRecord } from '@/lib/storage';
-import { Save } from 'lucide-react';
+import { Save, Calendar, IndianRupee } from 'lucide-react';
 
 export default function DailyEntry() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -99,7 +99,10 @@ export default function DailyEntry() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="entry-date">Date</Label>
+        <Label htmlFor="entry-date" className="flex items-center gap-2 text-sm font-medium">
+          <Calendar className="w-4 h-4 text-muted-foreground" />
+          Date
+        </Label>
         <div className="flex gap-2">
           <Input
             id="entry-date"
@@ -119,10 +122,13 @@ export default function DailyEntry() {
         </div>
       </div>
 
-      <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+      <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-5 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Total salary for the day:</span>
-          <span className="text-2xl font-mono font-bold text-primary" data-testid="text-daily-total">
+          <span className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+            <IndianRupee className="w-5 h-5" />
+            Total salary for the day
+          </span>
+          <span className="text-3xl font-mono font-bold text-primary" data-testid="text-daily-total">
             ₹{totalSalary.toLocaleString('en-IN')}
           </span>
         </div>
@@ -149,11 +155,12 @@ export default function DailyEntry() {
 
       <Button
         onClick={handleSave}
-        className="w-full sm:w-auto min-w-32"
+        className="w-full sm:w-auto min-w-40 shadow-md hover:shadow-lg transition-shadow"
+        size="lg"
         data-testid="button-save"
       >
-        <Save className="w-4 h-4 mr-2" />
-        Save
+        <Save className="w-5 h-5 mr-2" />
+        Save Records
       </Button>
     </div>
   );
