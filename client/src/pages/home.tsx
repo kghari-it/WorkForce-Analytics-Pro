@@ -33,8 +33,8 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-chart-3 bg-clip-text text-transparent">
-            Productivity & Salary Tracker
+          <h1 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary via-chart-1 to-chart-3 bg-clip-text text-transparent tracking-tight">
+            WorkForce Analytics Pro
           </h1>
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
