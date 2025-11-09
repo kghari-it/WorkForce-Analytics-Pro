@@ -57,6 +57,7 @@ export default function WorkerEntryCard({
             step="1"
             value={sheetsTapped}
             onChange={(e) => onSheetsTappedChange(Math.max(0, parseInt(e.target.value) || 0))}
+            onFocus={(e) => e.target.select()}
             data-testid={`input-sheets-${workerId}`}
           />
         </div>
