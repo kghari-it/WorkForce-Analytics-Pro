@@ -3,13 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { storage, WorkerRecord } from '@/lib/storage';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { storage, WorkerRecord, WorkerSettings } from '@/lib/storage';
 import { exportToCSV, parseCSV } from '@/lib/csv-utils';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Upload } from 'lucide-react';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<WorkerRecord[]>([]);
+  const [workers, setWorkers] = useState<WorkerSettings[]>([]);
+  const [selectedWorker, setSelectedWorker] = useState<string>('all');
   const [startDate, setStartDate] = useState(() => {
     const date = new Date();
     date.setDate(date.getDate() - 30);
@@ -19,15 +28,28 @@ export default function Dashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
+    loadWorkers();
+  }, []);
+
+  useEffect(() => {
     loadRecords();
   }, [startDate, endDate]);
+
+  const loadWorkers = async () => {
+    const workerSettings = await storage.getWorkerSettings();
+    setWorkers(workerSettings);
+  };
 
   const loadRecords = async () => {
     const data = await storage.getRecordsByDateRange(startDate, endDate);
     setRecords(data.sort((a, b) => b.date.localeCompare(a.date)));
   };
 
-  const workerTotals = records.reduce((acc, record) => {
+  const filteredRecords = selectedWorker === 'all' 
+    ? records 
+    : records.filter(r => r.workerId === selectedWorker);
+
+  const workerTotals = filteredRecords.reduce((acc, record) => {
     if (!acc[record.workerId]) {
       acc[record.workerId] = {
         name: record.workerName,
@@ -52,7 +74,7 @@ export default function Dashboard() {
   );
 
   const handleExport = () => {
-    exportToCSV(records);
+    exportToCSV(filteredRecords);
     toast({
       title: 'Exported',
       description: 'CSV file downloaded successfully',
@@ -106,6 +128,22 @@ export default function Dashboard() {
             onChange={(e) => setEndDate(e.target.value)}
             data-testid="input-end-date"
           />
+        </div>
+        <div className="flex-1 space-y-2">
+          <Label htmlFor="worker-filter">Worker Filter</Label>
+          <Select value={selectedWorker} onValueChange={setSelectedWorker}>
+            <SelectTrigger id="worker-filter" data-testid="select-worker-filter">
+              <SelectValue placeholder="All Workers" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Workers</SelectItem>
+              {workers.map((worker) => (
+                <SelectItem key={worker.id} value={worker.id}>
+                  {worker.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
