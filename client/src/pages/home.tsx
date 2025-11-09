@@ -33,7 +33,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-semibold mb-4">Rubber Farm Tracker</h1>
+          <h1 className="text-2xl font-semibold mb-4">Productivity & Salary Tracker</h1>
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
       </header>
