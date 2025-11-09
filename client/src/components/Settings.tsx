@@ -16,11 +16,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { storage, WorkerSettings } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
-import { Save, RotateCcw, Plus, Trash2, AlertTriangle, Users, Database } from 'lucide-react';
+import { useTheme } from '@/components/ThemeProvider';
+import { Save, RotateCcw, Plus, Trash2, AlertTriangle, Users, Database, Sun, Moon, Palette } from 'lucide-react';
 
 export default function Settings() {
   const [workers, setWorkers] = useState<WorkerSettings[]>([]);
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     loadWorkers();
@@ -118,6 +120,38 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl space-y-6">
+      <Card className="p-6 border-border/50">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Palette className="w-5 h-5 text-primary" />
+          </div>
+          <h2 className="text-lg font-semibold">Appearance</h2>
+        </div>
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Theme</Label>
+          <div className="flex gap-3">
+            <Button
+              variant={theme === 'light' ? 'default' : 'outline'}
+              onClick={() => setTheme('light')}
+              className="flex-1"
+              data-testid="button-theme-light"
+            >
+              <Sun className="w-4 h-4 mr-2" />
+              Light
+            </Button>
+            <Button
+              variant={theme === 'dark' ? 'default' : 'outline'}
+              onClick={() => setTheme('dark')}
+              className="flex-1"
+              data-testid="button-theme-dark"
+            >
+              <Moon className="w-4 h-4 mr-2" />
+              Dark
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6 border-border/50">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
