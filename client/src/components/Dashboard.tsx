@@ -13,7 +13,7 @@ import {
 import { storage, WorkerRecord, WorkerSettings } from '@/lib/storage';
 import { exportToCSV, parseCSV } from '@/lib/csv-utils';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Upload, TrendingUp, IndianRupee, Calendar, FileText, Users } from 'lucide-react';
+import { Download, Upload, TrendingUp, IndianRupee, Calendar, FileText, Users, Filter, BarChart2, CheckCircle2 } from 'lucide-react';
 
 export default function Dashboard() {
   const [records, setRecords] = useState<WorkerRecord[]>([]);
@@ -35,6 +35,12 @@ export default function Dashboard() {
     loadRecords();
   }, [startDate, endDate]);
 
+  useEffect(() => {
+    if (records.length > 0) {
+      loadRecords();
+    }
+  }, [workers]);
+
   const loadWorkers = async () => {
     const workerSettings = await storage.getWorkerSettings();
     setWorkers(workerSettings);
@@ -51,8 +57,9 @@ export default function Dashboard() {
 
   const workerTotals = filteredRecords.reduce((acc, record) => {
     if (!acc[record.workerId]) {
+      const worker = workers.find(w => w.id === record.workerId);
       acc[record.workerId] = {
-        name: record.workerName,
+        name: worker?.name || record.workerName,
         daysWorked: 0,
         totalSalary: 0,
         totalSheets: 0,
@@ -107,10 +114,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <Card className="p-5 border-primary/20 bg-gradient-to-r from-primary/5 via-chart-1/5 to-chart-3/5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <BarChart2 className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Analytics Dashboard</h2>
+            <p className="text-sm text-muted-foreground">Track workforce productivity and payroll</p>
+          </div>
+        </div>
+      </Card>
+
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 space-y-2">
-          <Label htmlFor="start-date">Start Date</Label>
+          <Label htmlFor="start-date" className="flex items-center gap-2 text-sm font-medium">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            Start Date
+          </Label>
           <Input
             id="start-date"
             type="date"
@@ -120,7 +142,10 @@ export default function Dashboard() {
           />
         </div>
         <div className="flex-1 space-y-2">
-          <Label htmlFor="end-date">End Date</Label>
+          <Label htmlFor="end-date" className="flex items-center gap-2 text-sm font-medium">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            End Date
+          </Label>
           <Input
             id="end-date"
             type="date"
@@ -131,8 +156,8 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 space-y-2">
           <Label htmlFor="worker-filter" className="flex items-center gap-2 text-sm font-medium">
-            <Users className="w-4 h-4 text-muted-foreground" />
-            Worker Filter
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            Filter by Worker
           </Label>
           <Select value={selectedWorker} onValueChange={setSelectedWorker}>
             <SelectTrigger id="worker-filter" data-testid="select-worker-filter">
@@ -151,7 +176,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="p-5 border-border/50 hover-elevate transition-all">
+        <Card className="p-5 border-border/50 hover-elevate transition-all duration-300 hover:shadow-lg">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -162,12 +187,12 @@ export default function Dashboard() {
                 {grandTotals.daysWorked}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-chart-2/10 flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-chart-2" />
+            <div className="w-12 h-12 rounded-lg bg-chart-2/10 flex items-center justify-center animate-pulse">
+              <CheckCircle2 className="w-6 h-6 text-chart-2" />
             </div>
           </div>
         </Card>
-        <Card className="p-5 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover-elevate transition-all">
+        <Card className="p-5 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover-elevate transition-all duration-300 hover:shadow-lg hover:scale-105">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -178,12 +203,12 @@ export default function Dashboard() {
                 ₹{grandTotals.totalSalary.toLocaleString('en-IN')}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center animate-pulse">
               <IndianRupee className="w-6 h-6 text-primary" />
             </div>
           </div>
         </Card>
-        <Card className="p-5 border-border/50 hover-elevate transition-all">
+        <Card className="p-5 border-border/50 hover-elevate transition-all duration-300 hover:shadow-lg">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -194,14 +219,14 @@ export default function Dashboard() {
                 {grandTotals.totalSheets}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-chart-3/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-chart-3/10 flex items-center justify-center animate-pulse">
               <FileText className="w-6 h-6 text-chart-3" />
             </div>
           </div>
         </Card>
       </div>
 
-      <Card className="overflow-hidden border-border/50">
+      <Card className="overflow-hidden border-border/50 shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead className="bg-muted/50">
@@ -214,8 +239,15 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {Object.entries(workerTotals).map(([workerId, totals]) => (
-                <tr key={workerId} className="border-b hover-elevate transition-all" data-testid={`row-worker-${workerId}`}>
-                  <td className="p-4 font-semibold">{totals.name}</td>
+                <tr key={workerId} className="border-b hover-elevate transition-all duration-200 hover:bg-muted/30" data-testid={`row-worker-${workerId}`}>
+                  <td className="p-4 font-semibold">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Users className="w-4 h-4 text-primary" />
+                      </div>
+                      <span>{totals.name}</span>
+                    </div>
+                  </td>
                   <td className="p-4 text-right font-mono text-base">{totals.daysWorked}</td>
                   <td className="p-4 text-right font-mono text-base font-semibold text-primary">₹{totals.totalSalary.toLocaleString('en-IN')}</td>
                   <td className="p-4 text-right font-mono text-base">{totals.totalSheets}</td>
@@ -227,11 +259,11 @@ export default function Dashboard() {
       </Card>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button onClick={handleExport} variant="outline" size="lg" className="shadow-sm" data-testid="button-export">
+        <Button onClick={handleExport} variant="outline" size="lg" className="shadow-sm hover:shadow-md transition-all" data-testid="button-export">
           <Download className="w-5 h-5 mr-2" />
           Export CSV
         </Button>
-        <Button variant="outline" size="lg" className="shadow-sm" asChild data-testid="button-import">
+        <Button variant="outline" size="lg" className="shadow-sm hover:shadow-md transition-all" asChild data-testid="button-import">
           <label className="cursor-pointer">
             <Upload className="w-5 h-5 mr-2" />
             Import CSV

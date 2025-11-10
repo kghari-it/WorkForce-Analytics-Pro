@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import WorkerEntryCard from './WorkerEntryCard';
 import { storage, WorkerSettings, WorkerRecord } from '@/lib/storage';
-import { Save, Calendar, IndianRupee } from 'lucide-react';
+import { Save, Calendar, IndianRupee, Sparkles } from 'lucide-react';
 
 export default function DailyEntry() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -97,7 +98,7 @@ export default function DailyEntry() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-500">
       <div className="space-y-2">
         <Label htmlFor="entry-date" className="flex items-center gap-2 text-sm font-medium">
           <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -122,17 +123,25 @@ export default function DailyEntry() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-5 shadow-sm">
+      <Card className="p-5 border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-md hover:shadow-lg transition-all duration-300">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
-            <IndianRupee className="w-5 h-5" />
-            Total salary for the day
-          </span>
-          <span className="text-3xl font-mono font-bold text-primary" data-testid="text-daily-total">
-            ₹{totalSalary.toLocaleString('en-IN')}
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+              <IndianRupee className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Daily Total</p>
+              <p className="text-sm font-semibold">Salary Summary</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground mb-1">Today's Total</p>
+            <span className="text-3xl font-mono font-bold text-primary" data-testid="text-daily-total">
+              ₹{totalSalary.toLocaleString('en-IN')}
+            </span>
+          </div>
         </div>
-      </div>
+      </Card>
 
       <div className="space-y-4">
         {workers.map(worker => {
@@ -153,15 +162,31 @@ export default function DailyEntry() {
         })}
       </div>
 
-      <Button
-        onClick={handleSave}
-        className="w-full sm:w-auto min-w-40 shadow-md hover:shadow-lg transition-shadow"
-        size="lg"
-        data-testid="button-save"
-      >
-        <Save className="w-5 h-5 mr-2" />
-        Save Records
-      </Button>
+      <div className="flex gap-3">
+        <Button
+          onClick={handleSave}
+          className="flex-1 sm:flex-initial sm:min-w-40 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+          size="lg"
+          data-testid="button-save"
+        >
+          <Save className="w-5 h-5 mr-2" />
+          Save Records
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            const today = new Date().toISOString().split('T')[0];
+            if (date !== today) {
+              setDate(today);
+            }
+          }}
+          className="shadow-sm hover:shadow-md transition-all"
+          size="lg"
+        >
+          <Sparkles className="w-5 h-5 mr-2" />
+          Quick Reset
+        </Button>
+      </div>
     </div>
   );
 }

@@ -119,8 +119,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <Card className="p-6 border-border/50">
+    <div className="max-w-2xl space-y-6 animate-in fade-in duration-500">
+      <Card className="p-6 border-border/50 hover-elevate transition-all duration-300">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Palette className="w-5 h-5 text-primary" />
@@ -152,7 +152,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      <Card className="p-6 border-border/50">
+      <Card className="p-6 border-border/50 hover-elevate transition-all duration-300">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -167,18 +167,21 @@ export default function Settings() {
         </div>
         <div className="space-y-4">
           {workers.map((worker, index) => (
-            <div key={worker.id} className="flex gap-2 items-end">
-              <div className="flex-1 space-y-2">
+            <div key={worker.id} className="flex gap-2 items-end group">
+              <div className="flex-1 space-y-2 relative">
                 <Label htmlFor={`worker-name-${worker.id}`}>
                   Worker {String.fromCharCode(65 + index)}
                 </Label>
-                <Input
-                  id={`worker-name-${worker.id}`}
-                  value={worker.name}
-                  onChange={(e) => updateWorkerName(worker.id, e.target.value)}
-                  placeholder={`Worker ${String.fromCharCode(65 + index)}`}
-                  data-testid={`input-worker-name-${worker.id}`}
-                />
+                <div className="relative">
+                  <Input
+                    id={`worker-name-${worker.id}`}
+                    value={worker.name}
+                    onChange={(e) => updateWorkerName(worker.id, e.target.value)}
+                    placeholder={`Worker ${String.fromCharCode(65 + index)}`}
+                    data-testid={`input-worker-name-${worker.id}`}
+                    className="transition-all duration-200 focus:ring-2"
+                  />
+                </div>
               </div>
               {workers.length > 1 && (
                 <Button
@@ -186,6 +189,7 @@ export default function Settings() {
                   size="icon"
                   variant="outline"
                   data-testid={`button-remove-worker-${worker.id}`}
+                  className="opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -196,7 +200,7 @@ export default function Settings() {
       </Card>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button onClick={handleSave} size="lg" className="shadow-md" data-testid="button-save-settings">
+        <Button onClick={handleSave} size="lg" className="shadow-md hover:shadow-lg transition-all duration-300" data-testid="button-save-settings">
           <Save className="w-5 h-5 mr-2" />
           Save Settings
         </Button>
@@ -206,7 +210,7 @@ export default function Settings() {
         </Button>
       </div>
 
-      <Card className="p-6 border-destructive/50 bg-destructive/5">
+      <Card className="p-6 border-destructive/50 bg-destructive/5 hover-elevate transition-all duration-300">
         <div className="flex items-start gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
             <Database className="w-5 h-5 text-destructive" />
