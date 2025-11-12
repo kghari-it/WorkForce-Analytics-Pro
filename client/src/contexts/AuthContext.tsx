@@ -2,12 +2,15 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
+const isSupabaseConfigured = !!supabase;
+
 interface AuthContextType {
   session: Session | null;
   user: Session['user'] | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  isConfigured: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +23,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let isMounted = true;
 
     const initAuth = async () => {
+      if (!isSupabaseConfigured) {
+        if (isMounted) {
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (isMounted) {
@@ -36,6 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initAuth();
 
+    if (!isSupabaseConfigured) {
+      return;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (isMounted) {
         setSession(newSession);
@@ -49,6 +63,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase is not configured. Please set environment variables.');
+    }
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -66,6 +84,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      setSession(null);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -86,6 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         signInWithGoogle,
         signOut,
+        isConfigured: isSupabaseConfigured,
       }}
     >
       {children}

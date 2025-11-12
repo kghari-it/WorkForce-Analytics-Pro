@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Briefcase, LogIn, Loader2 } from 'lucide-react';
 
 export default function Login() {
-  const { session, loading, signInWithGoogle } = useAuth();
+  const { session, loading, signInWithGoogle, isConfigured } = useAuth();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,6 +76,15 @@ export default function Login() {
             </ul>
           </div>
 
+          {!isConfigured && (
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200 font-semibold mb-2">Configuration Required</p>
+              <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                Supabase environment variables are not configured. Please check GOOGLE_OAUTH_SETUP.md for setup instructions.
+              </p>
+            </div>
+          )}
+
           {error && (
             <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
               <p className="text-sm text-destructive">{error}</p>
@@ -84,7 +93,7 @@ export default function Login() {
 
           <Button
             onClick={handleGoogleSignIn}
-            disabled={isSigningIn}
+            disabled={isSigningIn || !isConfigured}
             size="lg"
             className="w-full shadow-md hover:shadow-lg transition-all"
           >
